@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Магазин</title>
+  <style>
+    :root { --bg:#efe8da; --surface:#fbf7ee; --ink:#26211b; --muted:#8a7f6e; --line:#ddd3bf; --accent:#c8502d; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#16130f; --surface:#1f1b16; --ink:#efe6d6; --muted:#9a8f7c; --line:#342e25; --accent:#ec7a52; }
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 48px 20px; }
+    h1 { margin:0 0 6px; font-family: Georgia, serif; font-size: 44px; letter-spacing:-1px; }
+    h1 span { color: var(--accent); }
+    .sub { margin:0 0 28px; color:var(--muted); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+    .card { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:20px; transition:transform .2s, border-color .2s; }
+    .card:hover { transform:translateY(-3px); border-color:var(--accent); }
+    .emoji { font-size:52px; line-height:1; }
+    .card h2 { margin:14px 0 6px; font-size:17px; }
+    .card p { margin:0 0 14px; color:var(--muted); font-size:14px; min-height:40px; }
+    .price { font-weight:700; font-size:18px; }
+    .stock { color:var(--muted); font-size:13px; }
+    #status { color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Магазин<span>.</span></h1>
+    <p class="sub">Временная страница каталога: товары приходят из базы данных. Красивый магазин будет на следующем шаге.</p>
+    <p id="status">Загрузка…</p>
+    <div class="grid" id="grid"></div>
+  </div>
+  <script>
+    const grid = document.getElementById('grid');
+    const status = document.getElementById('status');
+    async function load() {
+      try {
+        const res = await fetch('/api/products');
+        if (!res.ok) throw new Error();
+        const products = await res.json();
+        status.textContent = '';
+        products.forEach((p) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          const e = document.createElement('div'); e.className = 'emoji'; e.textContent = p.emoji;
+          const h = document.createElement('h2'); h.textContent = p.name;
+          const d = document.createElement('p'); d.textContent = p.description;
+          const pr = document.createElement('div'); pr.className = 'price'; pr.textContent = p.price.toLocaleString('ru-RU') + ' сум';
+          const s = document.createElement('div'); s.className = 'stock'; s.textContent = 'В наличии: ' + p.stock;
+          card.append(e, h, d, pr, s);
+          grid.append(card);
+        });
+      } catch (err) {
+        status.textContent = 'Не удалось загрузить каталог. Проверь, что контейнеры запущены.';
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

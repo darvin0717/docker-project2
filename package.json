@@ -1,0 +1,13 @@
+{
+  "name": "shop-app",
+  "version": "0.2.0",
+  "description": "Учебный интернет-магазин для практики Docker, Git и CI/CD",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}

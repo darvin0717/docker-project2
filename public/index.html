@@ -49,13 +49,16 @@
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
     }
     button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    a { color: inherit; }
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     [hidden] { display: none !important; }
     .wrap { position: relative; max-width: 1040px; margin: 0 auto; padding: 28px 20px 90px; }
 
-    header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 44px; }
-    .logo { font-family: var(--display); font-weight: 600; font-size: 30px; letter-spacing: -1px; }
-    .logo span { color: var(--accent); }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+    .logo { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 30px; letter-spacing: -1px; }
+    .logo-mark { width: 40px; height: 40px; flex-shrink: 0; transition: transform .3s cubic-bezier(.2,.9,.3,1.4); }
+    .logo:hover .logo-mark { transform: rotate(-8deg) scale(1.08); }
+    .logo-text span { color: var(--accent); }
     .tools { display: flex; gap: 10px; }
     .icon-btn {
       position: relative; width: 44px; height: 44px; display: grid; place-items: center;
@@ -75,14 +78,56 @@
     :root[data-theme="dark"] .sun { display: block; }
     :root[data-theme="dark"] .moon { display: none; }
 
-    .hero h1 {
-      margin: 0; font-family: var(--display); font-weight: 600;
-      font-size: clamp(40px, 8vw, 68px); line-height: 1; letter-spacing: -2px;
+    /* ---------- Баннер ---------- */
+    .banner {
+      position: relative; height: 390px; margin-bottom: 44px;
+      border: 1px solid var(--line); border-radius: 26px; overflow: hidden;
+      background: var(--surface); box-shadow: var(--shadow);
     }
-    .hero h1 em { color: var(--accent); font-style: italic; }
-    .hero p { margin: 14px 0 0; max-width: 520px; color: var(--muted); font-size: 17px; }
+    .slide {
+      position: absolute; inset: 0; display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 12px;
+      padding: 36px 56px 92px;
+      background: linear-gradient(120deg, color-mix(in srgb, var(--tint) 26%, var(--surface)), color-mix(in srgb, var(--tint) 7%, var(--surface)));
+      opacity: 0; visibility: hidden; transition: opacity .6s, visibility .6s;
+    }
+    .slide.active { opacity: 1; visibility: visible; }
+    .kicker { display: inline-block; margin-bottom: 14px; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); background: var(--tint); }
+    .slide h2 { margin: 0 0 12px; font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4.6vw, 50px); line-height: 1.04; letter-spacing: -1.5px; }
+    .slide p { margin: 0 0 16px; max-width: 420px; color: var(--muted); font-size: 16px; }
+    .chip { display: inline-block; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; font-weight: 600; background: color-mix(in srgb, var(--surface) 80%, transparent); }
+    .art { justify-self: center; width: 100%; max-width: 360px; }
+    .art svg { display: block; width: 100%; height: auto; max-height: 290px; }
+    .slide.active .art svg { animation: float 5s ease-in-out infinite; }
+    @keyframes float { 50% { transform: translateY(-8px); } }
+    .steam path { stroke-dasharray: 60; animation: steam 3.2s ease-in-out infinite; }
+    .steam path:nth-child(2) { animation-delay: .5s; }
+    .steam path:nth-child(3) { animation-delay: 1s; }
+    @keyframes steam { 0% { stroke-dashoffset: 60; opacity: 0; } 40% { opacity: .7; } 100% { stroke-dashoffset: -60; opacity: 0; } }
+    .waves path { animation: wave 1.8s ease-in-out infinite; }
+    .waves path:nth-child(even) { animation-delay: .3s; }
+    @keyframes wave { 50% { opacity: .15; } }
+    .more-btn {
+      position: absolute; right: 28px; bottom: 26px; z-index: 2;
+      display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px;
+      font-weight: 700; border-radius: 999px; color: var(--accent-ink); background: var(--accent);
+      box-shadow: 0 10px 24px -10px var(--accent); transition: transform .15s, filter .2s;
+    }
+    .more-btn:hover { filter: brightness(1.08); transform: translateX(2px); }
+    .more-btn svg { width: 16px; height: 16px; }
+    .dots { position: absolute; left: 56px; bottom: 36px; z-index: 2; display: flex; gap: 8px; }
+    .dots button { width: 10px; height: 10px; border-radius: 99px; background: var(--line); transition: width .3s, background .3s; }
+    .dots button.on { width: 30px; background: var(--accent); }
+    .nav { position: absolute; top: 50%; z-index: 2; width: 40px; height: 40px; margin-top: -20px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 85%, transparent); transition: border-color .2s; }
+    .nav:hover { border-color: var(--accent); }
+    .nav svg { width: 18px; height: 18px; }
+    .nav.prev { left: 12px; }
+    .nav.next { right: 12px; }
 
-    .controls { display: flex; flex-wrap: wrap; gap: 12px; margin: 32px 0 22px; }
+    .section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0; }
+    .section-title h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 34px; letter-spacing: -1px; }
+    .section-title span { color: var(--muted); font-size: 14px; }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0 22px; }
     .search { position: relative; flex: 1 1 260px; }
     .search svg { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: var(--muted); }
     input[type=search], select {
@@ -102,7 +147,7 @@
 
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
     .card {
-      display: flex; flex-direction: column;
+      display: flex; flex-direction: column; cursor: pointer;
       background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
       box-shadow: var(--shadow); overflow: hidden;
       transition: transform .22s, border-color .22s;
@@ -113,17 +158,20 @@
     .tile {
       position: relative; height: 150px; display: grid; place-items: center; font-size: 68px;
       background: color-mix(in srgb, var(--tint) 20%, var(--surface));
-      transition: transform .3s;
     }
-    .card:hover .tile span { display: inline-block; transform: scale(1.12) rotate(-4deg); }
     .tile span { display: inline-block; transition: transform .3s; }
+    .card:hover .tile span { transform: scale(1.12) rotate(-4deg); }
     .low {
       position: absolute; top: 12px; left: 12px; font-size: 12px; font-weight: 600;
       padding: 3px 10px; border-radius: 999px; color: var(--accent-ink); background: var(--accent);
     }
     .body { display: flex; flex-direction: column; flex: 1; padding: 16px 18px 18px; }
     .body h2 { margin: 0 0 4px; font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.2; }
-    .body p { margin: 0 0 16px; color: var(--muted); font-size: 14px; flex: 1; }
+    .body h2 a { text-decoration: none; }
+    .body h2 a:hover { color: var(--accent); }
+    .body p { margin: 0 0 10px; color: var(--muted); font-size: 14px; flex: 1; }
+    .more { align-self: flex-start; margin-bottom: 14px; font-size: 14px; font-weight: 600; color: var(--accent); text-decoration: none; }
+    .more:hover { text-decoration: underline; }
     .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .price { font-weight: 700; font-size: 17px; white-space: nowrap; }
     .add {
@@ -145,6 +193,45 @@
     .state h2 { margin: 0 0 6px; font-family: var(--display); font-size: 24px; color: var(--ink); }
     .state button { margin-top: 14px; }
 
+    /* ---------- Карточка товара ---------- */
+    .modal { position: fixed; inset: 0; z-index: 25; display: grid; place-items: center; padding: 20px; background: rgba(20,12,4,.55); opacity: 0; pointer-events: none; transition: opacity .25s; }
+    .modal.open { opacity: 1; pointer-events: auto; }
+    .panel {
+      position: relative; width: min(880px, 100%); max-height: calc(100vh - 40px); overflow-y: auto;
+      background: var(--bg); border: 1px solid var(--line); border-radius: 24px;
+      box-shadow: 0 30px 80px -20px rgba(0,0,0,.6);
+      transform: translateY(18px) scale(.98); transition: transform .3s;
+    }
+    .modal.open .panel { transform: none; }
+    .p-close { position: absolute; top: 14px; right: 14px; z-index: 2; }
+    .p-grid { display: grid; grid-template-columns: 1fr 1.1fr; }
+    .big { display: grid; place-items: center; min-height: 360px; font-size: 150px; background: color-mix(in srgb, var(--tint) 22%, var(--surface)); }
+    .big span { display: inline-block; animation: float 5s ease-in-out infinite; }
+    .info { display: flex; flex-direction: column; gap: 14px; padding: 34px 30px 30px; }
+    .back { align-self: flex-start; font-size: 14px; color: var(--muted); }
+    .back:hover { color: var(--accent); }
+    .info h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 32px; line-height: 1.1; letter-spacing: -1px; }
+    .status { align-self: flex-start; padding: 3px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ok); border: 1px solid currentColor; }
+    .status.low { position: static; color: var(--accent); background: none; }
+    .status.out { color: var(--muted); }
+    .desc { margin: 0; font-size: 16px; }
+    .facts { margin: 0; padding: 12px 0 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 14px; }
+    .facts dt { color: var(--muted); }
+    .facts dd { margin: 0; }
+    .buy { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: auto; padding-top: 6px; }
+    .buy .price { font-family: var(--display); font-size: 30px; }
+    .buy-actions { display: flex; align-items: center; gap: 10px; }
+    .link-btn { font-size: 14px; font-weight: 600; color: var(--accent); text-decoration: underline; }
+    .also { padding: 22px 30px 28px; border-top: 1px solid var(--line); background: var(--surface); }
+    .also h3 { margin: 0 0 12px; font-family: var(--display); font-size: 20px; font-weight: 600; }
+    .also-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+    .mini { display: flex; align-items: center; gap: 12px; padding: 10px; text-align: left; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); transition: border-color .2s, transform .2s; }
+    .mini:hover { border-color: var(--tint); transform: translateY(-2px); }
+    .mini .em { width: 46px; height: 46px; flex-shrink: 0; display: grid; place-items: center; font-size: 26px; border-radius: 10px; background: color-mix(in srgb, var(--tint) 22%, var(--surface)); }
+    .mini b { display: block; font-size: 14px; line-height: 1.2; }
+    .mini small { color: var(--muted); }
+
+    /* ---------- Корзина ---------- */
     .overlay { position: fixed; inset: 0; background: rgba(20,12,4,.45); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 20; }
     .overlay.open { opacity: 1; pointer-events: auto; }
     .drawer {
@@ -177,13 +264,34 @@
     #toasts { position: fixed; left: 0; right: 0; bottom: 22px; z-index: 30; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
     .toast { padding: 11px 18px; border-radius: 12px; font-size: 14px; color: var(--bg); background: var(--ink); box-shadow: 0 10px 30px -10px rgba(0,0,0,.5); animation: up .3s ease-out; }
     @keyframes up { from { opacity: 0; transform: translateY(12px); } }
+
+    @media (max-width: 760px) {
+      .banner { height: 560px; }
+      .slide { grid-template-columns: 1fr; align-content: start; padding: 22px 22px 96px; gap: 4px; }
+      .art { order: -1; max-width: 230px; }
+      .art svg { max-height: 190px; }
+      .dots { left: 22px; }
+      .more-btn { right: 18px; bottom: 20px; padding: 12px 18px; }
+      .nav { display: none; }
+      .p-grid { grid-template-columns: 1fr; }
+      .big { min-height: 200px; font-size: 100px; }
+      .info { padding: 24px 22px; }
+      .also { padding: 20px 22px 24px; }
+    }
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <div class="logo">Лавка<span>.</span></div>
+      <a class="logo" href="/" aria-label="Лавка, на главную">
+        <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <rect width="40" height="40" rx="12" fill="var(--accent)"/>
+          <path d="M12 15h16l-1.4 14a2 2 0 0 1-2 1.8H15.4a2 2 0 0 1-2-1.8L12 15z" fill="var(--accent-ink)"/>
+          <path d="M16 15v-2a4 4 0 0 1 8 0v2" fill="none" stroke="var(--accent-ink)" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-text">Лавка<span>.</span></span>
+      </a>
       <div class="tools">
         <button class="icon-btn" id="theme" aria-label="Сменить тему" title="Сменить тему">
           <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -196,11 +304,14 @@
       </div>
     </header>
 
-    <section class="hero">
-      <h1>Хорошие вещи<br>для <em>каждого дня</em></h1>
-      <p>Небольшой магазин с доставкой по городу. Выбирай, складывай в корзину и забирай.</p>
+    <section class="banner" id="banner" aria-roledescription="карусель" aria-label="Подборка товаров" hidden>
+      <div id="slides"></div>
+      <button class="nav prev" id="prev" aria-label="Предыдущий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="nav next" id="next" aria-label="Следующий слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="dots" id="dots"></div>
     </section>
 
+    <div class="section-title"><h2>Ассортимент</h2><span id="total-count"></span></div>
     <div class="controls">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -218,6 +329,10 @@
     <div class="grid" id="grid"></div>
     <div class="state" id="empty" hidden><h2>Ничего не нашлось</h2><p>Попробуй другое слово.</p></div>
     <div class="state" id="fail" hidden><h2>Каталог не загрузился</h2><p>Проверь, что контейнеры приложения и базы запущены.</p><button class="add" id="retry">Повторить</button></div>
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Карточка товара"></div>
   </div>
 
   <div class="overlay" id="overlay"></div>
@@ -241,14 +356,67 @@
   <script>
     const $ = (s) => document.querySelector(s);
     const grid = $('#grid'), items = $('#items'), badge = $('#badge');
+    const modal = $('#modal'), panel = $('#panel');
     const FREE_FROM = 300000;
     const TINTS = ['#c8502d', '#d99a2b', '#5c8a5a', '#3f7a9c', '#8a5a9c', '#b5566b'];
     const tint = (id) => TINTS[id % TINTS.length];
     const money = (n) => n.toLocaleString('ru-RU') + ' сум';
 
+    /* Рисунки для баннера (нарисованы кодом, цвета берутся из темы) */
+    const ART_COFFEE = `<svg viewBox="0 0 320 260" role="img" aria-label="Чашка кофе с паром">
+      <circle cx="160" cy="140" r="108" fill="var(--tint)" opacity=".18"/>
+      <circle cx="268" cy="50" r="15" fill="var(--tint)" opacity=".35"/>
+      <circle cx="46" cy="70" r="9" fill="var(--tint)" opacity=".3"/>
+      <ellipse cx="160" cy="224" rx="104" ry="16" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M96 118h128v40c0 36-29 62-64 62s-64-26-64-62z" fill="var(--surface)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M224 134h16a22 22 0 0 1 0 44h-20" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="160" cy="118" rx="64" ry="9" fill="var(--tint)"/>
+      <path d="M114 152c12 9 26 12 44 12" fill="none" stroke="var(--tint)" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+      <g class="steam" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round">
+        <path d="M132 96c-10-12 10-20 0-34"/><path d="M160 92c-10-12 10-20 0-38"/><path d="M188 96c-10-12 10-20 0-34"/>
+      </g>
+      <g fill="var(--tint)"><ellipse cx="58" cy="208" rx="11" ry="7" transform="rotate(-25 58 208)"/><ellipse cx="86" cy="226" rx="10" ry="6.5" transform="rotate(20 86 226)"/><ellipse cx="262" cy="214" rx="11" ry="7" transform="rotate(30 262 214)"/></g>
+      <g stroke="var(--surface)" stroke-width="1.8" fill="none" stroke-linecap="round"><path d="M49 211q9-7 18-6"/><path d="M78 228q8-5 16-1"/><path d="M253 211q9-7 18-3"/></g>
+    </svg>`;
+    const ART_PHONES = `<svg viewBox="0 0 320 260" role="img" aria-label="Беспроводные наушники">
+      <circle cx="160" cy="140" r="108" fill="var(--tint)" opacity=".18"/>
+      <path d="M78 160V140a82 82 0 0 1 164 0v20" fill="none" stroke="var(--ink)" stroke-width="10" stroke-linecap="round"/>
+      <rect x="58" y="146" width="40" height="76" rx="18" fill="var(--tint)" stroke="var(--ink)" stroke-width="3"/>
+      <rect x="222" y="146" width="40" height="76" rx="18" fill="var(--tint)" stroke="var(--ink)" stroke-width="3"/>
+      <rect x="68" y="158" width="14" height="52" rx="7" fill="var(--surface)" opacity=".55"/>
+      <rect x="238" y="158" width="14" height="52" rx="7" fill="var(--surface)" opacity=".55"/>
+      <g class="waves" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" opacity=".55">
+        <path d="M38 166a26 26 0 0 0 0 40"/><path d="M22 154a46 46 0 0 0 0 64"/>
+        <path d="M282 166a26 26 0 0 1 0 40"/><path d="M298 154a46 46 0 0 1 0 64"/>
+      </g>
+      <g fill="var(--tint)" stroke="var(--tint)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="146" cy="104" rx="9" ry="7" stroke="none"/><path d="M155 104V70l18 7" fill="none"/>
+        <ellipse cx="196" cy="84" rx="7" ry="5.5" stroke="none" opacity=".6"/><path d="M203 84V60l13 5" fill="none" opacity=".6"/>
+      </g>
+    </svg>`;
+    const ART_BAG = `<svg viewBox="0 0 320 260" role="img" aria-label="Рюкзак">
+      <circle cx="160" cy="140" r="108" fill="var(--tint)" opacity=".18"/>
+      <path d="M128 66v-6a32 32 0 0 1 64 0v6" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M96 100c0-22 18-36 64-36s64 14 64 36v102a20 20 0 0 1-20 20H116a20 20 0 0 1-20-20z" fill="var(--tint)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M112 104c30 20 66 20 96 0" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+      <rect x="118" y="150" width="84" height="56" rx="16" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M118 166h84" stroke="var(--ink)" stroke-width="3"/>
+      <circle cx="194" cy="166" r="4" fill="var(--ink)"/>
+      <path d="M96 118c-20 16-24 56-8 86" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M224 118c20 16 24 56 8 86" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M270 70l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="var(--tint)"/>
+      <path d="M50 120l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="var(--tint)" opacity=".6"/>
+    </svg>`;
+    const SLIDES = [
+      { key: 'кофе', tint: '#a8643a', kicker: 'Хит недели', title: 'Утро начинается с хорошего кофе', text: 'Густой аромат, нотки шоколада и орехов. Заваривай дома как в кофейне.', art: ART_COFFEE },
+      { key: 'наушник', tint: '#3f7a9c', kicker: 'Новинка', title: 'Музыка без проводов', text: 'Шумоподавление и долгая работа без подзарядки: слушай где угодно.', art: ART_PHONES },
+      { key: 'рюкзак', tint: '#5c8a5a', kicker: 'В дорогу', title: 'Налегке и с комфортом', text: 'Водостойкая ткань и отдельное место для ноутбука. Подходит и для учёбы, и для поездок.', art: ART_BAG }
+    ];
+
     let products = [];
     let cart = {};
     let firstRender = true;
+    let current = null;
     try { cart = JSON.parse(localStorage.getItem('cart') || '{}'); } catch (e) { cart = {}; }
 
     function plural(n, f) {
@@ -258,18 +426,18 @@
       if (d >= 2 && d <= 4) return f[1];
       return f[2];
     }
-
+    function el(tag, cls, text) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text !== undefined) e.textContent = text;
+      return e;
+    }
     function toast(msg) {
-      const el = document.createElement('div');
-      el.className = 'toast';
-      el.textContent = msg;
-      $('#toasts').append(el);
-      setTimeout(() => el.remove(), 2600);
+      const t = el('div', 'toast', msg);
+      $('#toasts').append(t);
+      setTimeout(() => t.remove(), 2600);
     }
-
-    function saveCart() {
-      try { localStorage.setItem('cart', JSON.stringify(cart)); } catch (e) {}
-    }
+    function saveCart() { try { localStorage.setItem('cart', JSON.stringify(cart)); } catch (e) {} }
 
     function setQty(id, q, silent) {
       const p = products.find((x) => x.id === id);
@@ -284,13 +452,6 @@
       }
     }
 
-    function el(tag, cls, text) {
-      const e = document.createElement(tag);
-      if (cls) e.className = cls;
-      if (text !== undefined) e.textContent = text;
-      return e;
-    }
-
     function actionFor(p) {
       const q = cart[p.id] || 0;
       if (p.stock === 0) {
@@ -298,10 +459,11 @@
       }
       if (q === 0) {
         const b = el('button', 'add', 'В корзину');
-        b.onclick = () => { setQty(p.id, 1); toast('Добавлено: ' + p.name); };
+        b.onclick = (e) => { e.stopPropagation(); setQty(p.id, 1); toast('Добавлено: ' + p.name); };
         return b;
       }
       const box = el('div', 'stepper');
+      box.onclick = (e) => e.stopPropagation();
       const minus = el('button', '', '−'); minus.setAttribute('aria-label', 'Меньше');
       const plus = el('button', '', '+'); plus.setAttribute('aria-label', 'Больше');
       plus.disabled = q >= p.stock;
@@ -311,6 +473,7 @@
       return box;
     }
 
+    /* ---------- Каталог ---------- */
     function renderProducts() {
       const q = $('#search').value.trim().toLowerCase();
       let list = products.filter((p) => (p.name + ' ' + p.description).toLowerCase().includes(q));
@@ -323,20 +486,193 @@
         const card = el('article', 'card' + (firstRender ? ' enter' : ''));
         card.style.setProperty('--tint', tint(p.id));
         card.style.setProperty('--i', i);
+        card.onclick = (e) => { if (!e.target.closest('button, a')) openDetail(p.id); };
         const tile = el('div', 'tile');
         tile.append(el('span', '', p.emoji));
         if (p.stock > 0 && p.stock <= 5) tile.append(el('div', 'low', 'Осталось ' + p.stock));
         const body = el('div', 'body');
+        const title = el('h2');
+        title.append(detailLink(p, p.name));
+        const more = detailLink(p, 'Подробнее →');
+        more.className = 'more';
         const row = el('div', 'row');
         row.append(el('div', 'price', money(p.price)), actionFor(p));
-        body.append(el('h2', '', p.name), el('p', '', p.description), row);
+        body.append(title, el('p', '', p.description), more, row);
         card.append(tile, body);
         grid.append(card);
       });
+      $('#total-count').textContent = products.length + ' ' + plural(products.length, ['товар', 'товара', 'товаров']);
       $('#empty').hidden = !(products.length && list.length === 0);
       firstRender = false;
     }
 
+    function detailLink(p, text) {
+      const a = el('a', '', text);
+      a.href = '#p' + p.id;
+      a.onclick = (e) => { e.preventDefault(); openDetail(p.id); };
+      return a;
+    }
+
+    /* ---------- Карточка товара ---------- */
+    function renderDetail(focus) {
+      const p = products.find((x) => x.id === current);
+      if (!p) return;
+      const scroll = panel.scrollTop;
+      panel.replaceChildren();
+      panel.style.setProperty('--tint', tint(p.id));
+      const q = cart[p.id] || 0;
+
+      const close = el('button', 'icon-btn p-close');
+      close.id = 'detail-close';
+      close.setAttribute('aria-label', 'Закрыть');
+      close.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+      close.onclick = closeDetail;
+
+      const grid2 = el('div', 'p-grid');
+      const big = el('div', 'big');
+      big.append(el('span', '', p.emoji));
+
+      const info = el('div', 'info');
+      const back = el('button', 'back', '← В каталог');
+      back.onclick = closeDetail;
+      const status = el('span', 'status');
+      if (p.stock === 0) { status.className = 'status out'; status.textContent = 'Нет в наличии'; }
+      else if (p.stock <= 5) { status.className = 'status low'; status.textContent = 'Осталось ' + p.stock + ' шт.'; }
+      else { status.textContent = 'В наличии: ' + p.stock + ' шт.'; }
+
+      const facts = el('dl', 'facts');
+      [['Артикул', '№ ' + String(p.id).padStart(4, '0')],
+       ['Доставка', 'Курьером по городу или самовывоз'],
+       ['Бесплатно', 'при заказе от ' + money(FREE_FROM)]].forEach(([k, v]) => {
+        facts.append(el('dt', '', k), el('dd', '', v));
+      });
+
+      const buy = el('div', 'buy');
+      const actions = el('div', 'buy-actions');
+      actions.append(actionFor(p));
+      if (q > 0) {
+        const goCart = el('button', 'link-btn', 'Открыть корзину');
+        goCart.onclick = () => { closeDetail(); openCart(); };
+        actions.append(goCart);
+      }
+      buy.append(el('div', 'price', money(p.price)), actions);
+
+      info.append(back, el('h2', '', p.name), status, el('p', 'desc', p.description), facts, buy);
+      grid2.append(big, info);
+      panel.append(close, grid2);
+
+      const others = products.filter((x) => x.id !== p.id).slice(0, 3);
+      if (others.length) {
+        const also = el('div', 'also');
+        also.append(el('h3', '', 'Смотрите также'));
+        const row = el('div', 'also-row');
+        others.forEach((o) => {
+          const m = el('button', 'mini');
+          m.style.setProperty('--tint', tint(o.id));
+          const meta = el('div');
+          meta.append(el('b', '', o.name), el('small', '', money(o.price)));
+          m.append(el('div', 'em', o.emoji), meta);
+          m.onclick = () => { openDetail(o.id); panel.scrollTop = 0; };
+          row.append(m);
+        });
+        also.append(row);
+        panel.append(also);
+      }
+      panel.scrollTop = scroll;
+      if (focus) close.focus();
+    }
+
+    function showModal(on) {
+      modal.classList.toggle('open', on);
+      modal.setAttribute('aria-hidden', String(!on));
+      document.body.style.overflow = on ? 'hidden' : '';
+    }
+    function openDetail(id) {
+      if (!products.some((p) => p.id === id)) return;
+      const wasOpen = current !== null;
+      const url = '#p' + id;
+      if (wasOpen) history.replaceState({ app: true }, '', url); else history.pushState({ app: true }, '', url);
+      current = id;
+      renderDetail(!wasOpen);
+      showModal(true);
+    }
+    function closeDetail() {
+      if (current === null) return;
+      if (history.state && history.state.app) history.back();
+      else { history.replaceState(null, '', location.pathname + location.search); route(); }
+    }
+    function route() {
+      const m = /^#p(\d+)$/.exec(location.hash);
+      const id = m ? Number(m[1]) : null;
+      if (id && products.some((p) => p.id === id)) {
+        const wasOpen = current !== null;
+        current = id;
+        renderDetail(!wasOpen);
+        showModal(true);
+      } else {
+        current = null;
+        showModal(false);
+      }
+    }
+    window.addEventListener('popstate', route);
+    window.addEventListener('hashchange', route);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeDetail(); });
+
+    /* ---------- Баннер ---------- */
+    let slideEls = [], slideIdx = 0, timer = null;
+    function goTo(i) {
+      slideIdx = (i + slideEls.length) % slideEls.length;
+      slideEls.forEach((s, k) => {
+        const on = k === slideIdx;
+        s.el.classList.toggle('active', on);
+        s.el.inert = !on;
+        s.dot.classList.toggle('on', on);
+        s.dot.setAttribute('aria-current', on ? 'true' : 'false');
+      });
+    }
+    function stopAuto() { clearInterval(timer); }
+    function startAuto() {
+      stopAuto();
+      if (slideEls.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      timer = setInterval(() => goTo(slideIdx + 1), 6500);
+    }
+    function renderBanner() {
+      const box = $('#slides'), dots = $('#dots');
+      box.replaceChildren(); dots.replaceChildren(); slideEls = [];
+      SLIDES.forEach((s, i) => {
+        const p = products.find((x) => x.name.toLowerCase().includes(s.key)) || products[i];
+        if (!p) return;
+        const slide = el('div', 'slide');
+        slide.style.setProperty('--tint', s.tint);
+        const text = el('div');
+        text.append(el('span', 'kicker', s.kicker), el('h2', '', s.title), el('p', '', s.text),
+          el('span', 'chip', p.name + ' · ' + money(p.price)));
+        const art = el('div', 'art');
+        art.innerHTML = s.art;
+        const more = el('button', 'more-btn');
+        more.append(document.createTextNode('Подробнее '));
+        more.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>');
+        more.onclick = () => openDetail(p.id);
+        slide.append(text, art, more);
+        const dot = el('button');
+        dot.setAttribute('aria-label', 'Слайд ' + (slideEls.length + 1));
+        const idx = slideEls.length;
+        dot.onclick = () => { goTo(idx); startAuto(); };
+        box.append(slide); dots.append(dot);
+        slideEls.push({ el: slide, dot });
+      });
+      $('#banner').hidden = slideEls.length === 0;
+      if (slideEls.length) goTo(0);
+      startAuto();
+    }
+    $('#prev').onclick = () => { goTo(slideIdx - 1); startAuto(); };
+    $('#next').onclick = () => { goTo(slideIdx + 1); startAuto(); };
+    $('#banner').addEventListener('mouseenter', stopAuto);
+    $('#banner').addEventListener('mouseleave', startAuto);
+    $('#banner').addEventListener('focusin', stopAuto);
+    $('#banner').addEventListener('focusout', startAuto);
+
+    /* ---------- Корзина ---------- */
     function renderCart() {
       const ids = Object.keys(cart).map(Number);
       let total = 0, units = 0;
@@ -375,7 +711,11 @@
       badge.hidden = units === 0;
     }
 
-    function renderAll() { renderProducts(); renderCart(); }
+    function renderAll() {
+      renderProducts();
+      renderCart();
+      if (current !== null) renderDetail(false);
+    }
 
     function openCart() {
       $('#drawer').classList.add('open'); $('#overlay').classList.add('open');
@@ -401,9 +741,12 @@
         });
         saveCart();
         firstRender = true;
+        renderBanner();
         renderAll();
+        route();
       } catch (e) {
         grid.replaceChildren();
+        $('#banner').hidden = true;
         $('#fail').hidden = false;
       }
     }
@@ -422,12 +765,13 @@
     };
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if ($('#drawer').classList.contains('open')) closeCart();
+        if (current !== null) closeDetail();
+        else if ($('#drawer').classList.contains('open')) closeCart();
         else if (document.activeElement === $('#search')) { $('#search').value = ''; $('#search').blur(); renderProducts(); }
         return;
       }
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
-      if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey && e.key === '/') { e.preventDefault(); $('#search').focus(); }
+      if (!typing && current === null && !e.ctrlKey && !e.metaKey && !e.altKey && e.key === '/') { e.preventDefault(); $('#search').focus(); }
     });
 
     load();

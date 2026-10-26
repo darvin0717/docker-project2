@@ -24,7 +24,11 @@ app.get('/health', async (req, res) => {
 app.get('/api/products', async (req, res) => {
   try {
     const { rows } = await pool.query(
-      'SELECT id, name, description, price, emoji, stock FROM products ORDER BY id'
+      `SELECT id, name, brand, category, description, long_description,
+              price, emoji, stock, specs, image_url,
+              banner_order, banner_title, banner_text, banner_color
+         FROM products
+        ORDER BY id`
     );
     res.json(rows);
   } catch (err) {

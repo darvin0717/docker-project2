@@ -10,13 +10,22 @@ CREATE TABLE users (
 );
 
 CREATE TABLE products (
-  id          SERIAL PRIMARY KEY,
-  name        TEXT NOT NULL,
-  description TEXT NOT NULL DEFAULT '',
-  price       INTEGER NOT NULL CHECK (price >= 0),
-  emoji       TEXT NOT NULL DEFAULT '📦',
-  stock       INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+  id               SERIAL PRIMARY KEY,
+  name             TEXT NOT NULL,
+  brand            TEXT NOT NULL DEFAULT '',
+  category         TEXT NOT NULL DEFAULT 'Разное',
+  description      TEXT NOT NULL DEFAULT '',
+  long_description TEXT NOT NULL DEFAULT '',
+  price            INTEGER NOT NULL CHECK (price >= 0),
+  emoji            TEXT NOT NULL DEFAULT '📦',
+  stock            INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
+  specs            JSONB NOT NULL DEFAULT '[]',
+  image_url        TEXT,
+  banner_order     INTEGER,
+  banner_title     TEXT,
+  banner_text      TEXT,
+  banner_color     TEXT,
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE orders (
